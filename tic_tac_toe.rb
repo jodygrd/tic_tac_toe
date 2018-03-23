@@ -19,6 +19,7 @@ class Game
   def moveX
     puts 'Player X: Which square would you like?'
     @last_move = gets.chomp
+    error
     @true_board[@last_move.to_i-1] = 1
     @view_board[@last_move.to_i-1] = 'X'
     @last_player = 'X'
@@ -27,9 +28,18 @@ class Game
   def moveO
     puts 'Player O: Which square would you like?'
     @last_move = gets.chomp
+    error
     @true_board[@last_move.to_i-1] = -1
     @view_board[@last_move.to_i-1] = 'O'
     @last_player = 'O'
+  end
+
+  def error
+    if @true_board[@last_move.to_i-1] != 0
+      puts 'Sorry, please pick another box:'
+      display_board
+      @last_move = gets.chomp
+    end
   end
 
   def score
@@ -42,7 +52,6 @@ class Game
     diag_1 = @true_board[0] + @true_board[4] + @true_board[8]
     diag_2 = @true_board[6] + @true_board[4] + @true_board[2]
     @scores = [row_1,row_2,row_3,col_1,col_2,col_3,diag_1,diag_2]
-    p @scores
   end
 
   def check
@@ -54,27 +63,22 @@ class Game
       puts "Os win!"
     elsif !@true_board.include? 0
       @game_over = true
-      puts "MEOW!"
+      puts "Cat's game: MEOW!"
     end
   end
+
 
   def play
     puts "Let's play tic-tac-toe!"
     display_board
-    # Play 5 moves before checking for a winner
-    5.times do
-      @last_player == 'O' ? moveX : moveO
-    end
 
-    #Continue playing until win or draw
-    check
     until @game_over == true
       @last_player == 'O' ? moveX : moveO
+      display_board
+      score
+      check
     end
-
-
   end
-
 
 end
 
